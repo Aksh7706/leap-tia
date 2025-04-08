@@ -23,8 +23,6 @@ export function NFTDetails({ tokenId, metadata }: NFTDetailsProps) {
     );
   }
 
-  console.log(metadata);
-
   // Convert IPFS URLs to gateway URLs for display
   const imageUrl = metadata.image?.replace('ipfs://', IPFS_GATEWAY);
 

@@ -38,7 +38,7 @@ export function MintNFT({ onMintSuccess }: MintNFTProps) {
         address: contractAddress as `0x${string}`,
         abi: LEAP_LIGHT_NODE_ABI,
         functionName: 'safeMint',
-        args: [signature as `0x${string}`]
+        args: [address, "0x01", signature as `0x${string}`]
       });
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash });

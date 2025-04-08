@@ -1,5 +1,5 @@
 import { useAccount, useContractRead } from 'wagmi';
-import { IPFS_GATEWAY, LEAP_LIGHT_NODE_ABI } from '../constants';
+import { LEAP_LIGHT_NODE_ABI } from '../constants';
 import { useEffect, useState } from 'react';
 
 // Define metadata type for better type safety
@@ -59,10 +59,9 @@ export function useNFTBalance() {
     functionName: 'tokenURI',
     args: [tokenId as bigint],
     query: {
-      enabled: !!tokenId,
+      enabled: tokenId !== null,
     }
   });
-
   // Fetch metadata from tokenURI
   useEffect(() => {
     if (!tokenURI) return;
@@ -70,11 +69,9 @@ export function useNFTBalance() {
     const fetchMetadata = async () => {
       try {
         setIsMetadataLoading(true);
-        // Handle both IPFS and HTTP URIs
-        const uri = (tokenURI as string).replace('ipfs://', IPFS_GATEWAY);
-        const response = await fetch(uri);
-        if (!response.ok) throw new Error('Failed to fetch metadata');
-        const data = await response.json();
+        const base64Data = (tokenURI as string).replace('data:application/json;base64,', '');
+        const jsonString = atob(base64Data);
+        const data = JSON.parse(jsonString);
         setMetadata(data);
       } catch (error) {
         console.error('Error fetching NFT metadata:', error);

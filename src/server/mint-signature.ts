@@ -37,7 +37,7 @@ export async function mintSignature(address: string) {
     const chainId = network.chainId;
 
     // Create signature
-    const signature = await createMintSignature(address, signer, chainId);
+    const signature = await createMintSignature(address, signer, chainId, "0x01");
 
     // Return the signature
     return { signature };
@@ -78,7 +78,7 @@ export async function getWhitelistedAddresses() {
   }
 }
 
-async function createMintSignature(to: string, signer: ethers.Wallet, chainId: bigint) {
+async function createMintSignature(to: string, signer: ethers.Wallet, chainId: bigint, stage: string = "0x01") {
   const domain = {
     name: CONTRACT_NAME,
     version: CONTRACT_VERSION,
@@ -88,12 +88,14 @@ async function createMintSignature(to: string, signer: ethers.Wallet, chainId: b
 
   const types = {
     Mint: [
-      { name: "to", type: "address" }
+      { name: "to", type: "address" },
+      { name: "stage", type: "bytes1" }
     ]
   };
 
   const value = {
-    to: to
+    to: to,
+    stage: stage
   };
 
   return await signer.signTypedData(domain, types, value);
